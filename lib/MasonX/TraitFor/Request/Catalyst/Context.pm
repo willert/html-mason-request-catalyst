@@ -1,13 +1,28 @@
 package MasonX::TraitFor::Request::Catalyst::Context;
+# ABSTRACT: Catalyst context for Mason
 
 use Moose::Role;
 use namespace::autoclean;
 
-# requires 'some_method';
+=head1 SYNOPSIS
 
-=head1 NAME
+    # In your Mason plugin
 
-MasonX::TraitFor::Request::Catalyst::Context - Catalyst context for Mason
+    package MyApp::Mason::Plugin::Log;
+    use base qw(HTML::Mason::Plugin);
+
+    sub start_component_hook {
+        my ($self, $context) = @_;
+        my ( $m, $comp, $args ) = @{ $context };
+
+        my $meta = eval{ Class::MOP::class_of( $m ) } or return;
+        return unless $meta->does_role(
+            'MasonX::TraitFor::Request::Catalyst::Context
+        );
+
+        $m->catalyst_ctx->log->debug( "Rendering $comp" );
+    }
+
 
 =head1 DESCRIPTION
 
@@ -15,7 +30,7 @@ B<MasonX::TraitFor::Request::Catalyst::Context> is a L<Moose::Role>
 that provides a standard interface to access the catalyst context
 from within mason requests.
 
-=attr ctx
+=attr catalyst_ctx
 
 The Catalyst context object associated with the current request
 
@@ -31,20 +46,4 @@ has catalyst_ctx => (
 no Moose::Role;
 
 1;
-
-__END__
-
-=head1 SEE ALSO
-
-L<perl>, L<Moose::Role>
-
-=head1 AUTHOR
-
-Sebastian Willert, C<willert@gmail.com>
-
-=head1 COPYRIGHT
-
-This program soley owned by its author. Redistribution is prohibited.
-
-=cut
 
