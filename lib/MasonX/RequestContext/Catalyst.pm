@@ -1,4 +1,4 @@
-package MasonX::TraitFor::Request::Catalyst::Context;
+package MasonX::RequestContext::Catalyst;
 # ABSTRACT: Catalyst context for Mason
 
 use Moose::Role;
@@ -17,7 +17,7 @@ use namespace::autoclean;
 
         my $meta = eval{ Class::MOP::class_of( $m ) } or return;
         return unless $meta->does_role(
-            'MasonX::TraitFor::Request::Catalyst::Context
+            'MasonX::RequestContext::Catalyst
         );
 
         $m->catalyst_ctx->log->debug( "Rendering $comp" );
@@ -26,9 +26,10 @@ use namespace::autoclean;
 
 =head1 DESCRIPTION
 
-B<MasonX::TraitFor::Request::Catalyst::Context> is a L<Moose::Role>
-that provides a standard interface to access the catalyst context
-from within mason requests.
+B<MasonX::RequestContext::Catalyst> is a L<Moose::Role> that provides
+a standard interface to access the catalyst context from within mason
+requests. However, it does not try to discover the context, the Catalyst
+view itself is responsible for passing it to C<$interp->make_request>.
 
 =attr catalyst_ctx
 
