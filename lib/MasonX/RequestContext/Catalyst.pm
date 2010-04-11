@@ -44,6 +44,13 @@ has catalyst_ctx => (
   weak_ref => 1,
 );
 
+# this seems to be needed because of a bug in MooseX::NonMoose
+around FOREIGNBUILDARGS => sub{
+  my ( $orig, $class, %args ) = @_;
+  delete $args{catalyst_ctx};
+  return $class->$orig( %args );
+};
+
 no Moose::Role;
 
 1;

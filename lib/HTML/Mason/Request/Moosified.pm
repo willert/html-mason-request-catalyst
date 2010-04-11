@@ -7,7 +7,6 @@ use MooseX::NonMoose;
 use namespace::autoclean;
 
 extends 'HTML::Mason::Request';
-with 'MasonX::TraitFor::Request::Catalyst::Context';
 
 =head1 SYNOPSIS
 
@@ -31,14 +30,17 @@ L<MooseX::NonMoose> to moosify the request class.
 
 =cut
 
+use Carp;
+
 sub FOREIGNBUILDARGS {
   my ( $class, %args ) = @_;
 
   # remove attributes from base class constructor because
   # Mason applies strict attribute checking and will bail
   # out on unknown options
-  delete $args{ $_ } for map{ $_->init_arg || $_->name }
-    grep{ $_->has_init_arg } $class->meta->get_all_attributes;
+  delete $args{ $_ } for grep{ $_ } map{
+    $_->has_init_arg ? $_->init_arg : $_->name
+  } $class->meta->get_all_attributes;
 
   return %args;
 }
